@@ -16,6 +16,17 @@ const GameProvider = ({ children }) => {
 		cards: [],
 	});
 
+	const [totalCardsOne, setTotalCardsOne] = useState([]);
+	const [totalCardsTwo, setTotalCardsTwo] = useState([]);
+	const [playCardsOne, setPlayCardsOne] = useState({
+		name: '',
+		cards: [],
+	});
+	const [playCardsTwo, setPlayCardsTwo] = useState({
+		name: '',
+		cards: [],
+	});
+
 	const playGame = async () => {
 		setIdGame(await DeckOfCardsAPI.getIdGame());
 	};
@@ -25,6 +36,7 @@ const GameProvider = ({ children }) => {
 		setPlayerOne({ ...playerOne, cards: [...playerOne.cards, cards[0]] });
 		setPlayerTwo({ ...playerTwo, cards: [...playerTwo.cards, cards[1]] });
 		console.log(cards);
+		/*
 		const findCardPlayerOne = playerOne.cards.find(
 			card => card.value === cards[0].value
 		);
@@ -38,6 +50,7 @@ const GameProvider = ({ children }) => {
 			setShowToast(true);
 			setWinName(findCardPlayerOne ? playerOne.name : playerTwo.name);
 		}
+		*/
 	};
 	const firstRequestCards = async () => {
 		const cards = await DeckOfCardsAPI.getCards(idGame, 20);
@@ -76,6 +89,7 @@ const GameProvider = ({ children }) => {
 
 		console.log(cards);
 	};
+
 	return (
 		<GameContext.Provider
 			value={{
@@ -89,6 +103,14 @@ const GameProvider = ({ children }) => {
 				setShowToast,
 				winName,
 				firstRequestCards,
+				totalCardsOne,
+				setTotalCardsOne,
+				playCardsOne,
+				setPlayCardsOne,
+				playCardsTwo,
+				setPlayCardsTwo,
+				totalCardsTwo,
+				setTotalCardsTwo,
 			}}
 		>
 			{children}

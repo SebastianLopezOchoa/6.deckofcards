@@ -3,21 +3,21 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import useGame from '../hooks/useGame';
 const ListCards = () => {
-	const { playerOne, playerTwo } = useGame();
+	const { playCardsOne, playCardsTwo } = useGame();
 	return (
 		<>
 			<Container>
 				<Row>
 					<Col>
 						<div className='align-items-center my-2'>
-							<h4>Player {playerOne.name}</h4>
+							<h4>Player {playCardsOne.name}</h4>
 							<p>Cards obtained</p>
-							{playerOne.cards.map((card, index) => (
+							{playCardsOne.cards.map((card, index) => (
 								<img
 									className='col-sm-4 col-lg-1 mx-2 my-2'
 									key={index}
 									src={card.image}
-									alt={card.value}
+									alt={card.code}
 								/>
 							))}
 						</div>
@@ -28,14 +28,14 @@ const ListCards = () => {
 				<Row>
 					<Col>
 						<div className='align-items-center my-2'>
-							<h4>Player {playerTwo.name}</h4>
+							<h4>Player {playCardsTwo.name}</h4>
 							<p>Cards obtained</p>
-							{playerTwo.cards.map((card, index) => (
+							{playCardsTwo.cards.map((card, index) => (
 								<img
 									className='col-sm-4 col-lg-1 mx-2 my-2'
 									key={index}
 									src={card.image}
-									alt={card.value}
+									alt={card.code}
 								/>
 							))}
 						</div>
