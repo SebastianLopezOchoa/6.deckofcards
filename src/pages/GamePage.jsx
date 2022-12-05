@@ -21,6 +21,8 @@ const GamePage = () => {
 		setPlayCardsOne,
 		playCardsTwo,
 		setPlayCardsTwo,
+		setShowToast,
+		setWinName,
 	} = useGame();
 	useEffect(() => {
 		const fetchCards = async () => {
@@ -71,15 +73,39 @@ const GamePage = () => {
 		return total;
 	};
 
+	const winner = (player, totalCards) => {
+		const ternas = totalCards.filter(card => card.total === 3);
+		const cuarta = totalCards.filter(card => card.total === 4);
+		//Si tiene 2 ternas y 1 cuarta gana el juego
+		if (ternas.length === 2 && cuarta.length === 1) {
+			setShowToast(true);
+			setWinName(
+				player.name +
+					' Winner. TERNAS: ' +
+					ternas[0].id +
+					' y ' +
+					ternas[1].id +
+					' . CUARTA: ' +
+					cuarta[0].id +
+					'.'
+			);
+		}
+	};
+
 	useEffect(() => {
 		setPlayCardsOne({ ...playerOne, cards: changeValues(playerOne) });
 		setPlayCardsTwo({ ...playerTwo, cards: changeValues(playerTwo) });
-	}, [playerOne]);
+	}, [playerOne,playerTwo]);
 
 	useEffect(() => {
 		setTotalCardsOne(totalCards(playCardsOne));
 		setTotalCardsTwo(totalCards(playCardsTwo));
-	}, [playCardsOne]);
+	}, [playCardsOne,playCardsTwo]);
+
+	useEffect(() => {
+		winner(playerOne, totalCardsOne);
+		winner(playerTwo, totalCardsTwo);
+	}, [totalCardsOne, totalCardsTwo]);
 
 	return (
 		<>
