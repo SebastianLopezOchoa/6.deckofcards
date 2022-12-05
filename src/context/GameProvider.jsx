@@ -4,7 +4,7 @@ import GameContext from './GameContext';
 
 const GameProvider = ({ children }) => {
 	const [idGame, setIdGame] = useState(null);
-	const [win, setWin] = useState(false);
+	const [active, setActive] = useState(true);
 	const [showToast, setShowToast] = useState(false);
 	const [winName, setWinName] = useState('');
 	const [playerOne, setPlayerOne] = useState({
@@ -31,107 +31,57 @@ const GameProvider = ({ children }) => {
 		setIdGame(await DeckOfCardsAPI.getIdGame());
 	};
 
+	const rulesGame = (
+		cards,
+		request,
+		player,
+		playCards,
+		totalCards,
+		setPlayer
+	) => {
+		// busca si la carta que llega cuantas veces esta
+		const someCardPlayer = player.cards.filter(
+			card => card.value === cards[request].value
+		);
+		console.log('¿carta encontrada repetida?=' + someCardPlayer.length);
+		// si la carta que llega no tiene alguna repetida no se ingresa (se descarta)
+		if (someCardPlayer.length !== 0) {
+			// buscar elemento a eliminar que tiene 1 carta repetida
+			const findCardPlayer = totalCards.find(card => card.total === 1);
+			if (findCardPlayer) {
+				// elimino el elemento que tiene 1 carta repetida
+				let array = playCards.cards.filter(
+					card => card.value !== String(findCardPlayer.id)
+				);
+				array = [...array, cards[request]];
+				// agrego el nuevo elemento
+				setPlayer({ ...player, cards: array });
+			} else {
+				// buscar elemento a eliminar que tiene 2 cartas repetidas
+				const findCardPlayer = totalCards.find(card => card.total === 2);
+				if (findCardPlayer) {
+					// elimino 2 cartas repetidas
+					let array = playCards.cards.filter(
+						card => card.value !== String(findCardPlayer.id)
+					);
+					// como tengo 2 cartas repetidas y solo quiero eliminar una, voy y encuentro los dos elementos a eliminar
+					const repeatedCard = playCards.cards.filter(
+						card => card.value === String(findCardPlayer.id)
+					);
+					// ingreso el segundo elemento en llegar de la carta repetida
+					array = [...array, repeatedCard[1], cards[request]];
+					setPlayer({ ...player, cards: array });
+				}
+			}
+		}
+	};
+
 	const requestCards = async () => {
+		setActive(!active);
 		const cards = await DeckOfCardsAPI.getCards(idGame, 2);
-		//busca si la carta que llega cuantas veces esta
-		const someCardPlayerOne = playerOne.cards.filter(
-			card => card.value == cards[0].value
-		);
-		const someCardPlayerTwo = playerTwo.cards.filter(
-			card => card.value == cards[1].value
-		);
-		console.log('¿repetida carta 1?=' + someCardPlayerOne.length);
-		console.log('¿repetida carta 2?=' + someCardPlayerTwo.length);
-		//si la carta que llega no tiene ni una repetida no se ingresa(se descarta)
-		if (someCardPlayerOne.length !== 0) {
-			//buscar elemento a eliminar
-			const hii = totalCardsOne.find(card => card.total === 1);
-			console.log('find1=' + hii);
-			if (hii) {
-				let ar = playCardsOne.cards.filter(
-					card => card.value !== String(hii.id)
-				);
-				//agrego el nuevo elemento
-				ar = [...ar, cards[0]];
-				setPlayerOne({ ...playerOne, cards: ar });
-			} else {
-				const hi = totalCardsOne.find(card => card.total === 2);
-				if (hi) {
-					let ar = playCardsOne.cards.filter(
-						card => card.value !== String(hi.id)
-					);
-					//como tengo 2 solo quiero eliminar uno haci que encuentro el primero para no eliminarlo
-					const f = playCardsOne.cards.filter(
-						card => card.value === String(hi.id)
-					);
-					ar = [...ar, f[1], cards[0]];
-					setPlayerOne({ ...playerOne, cards: ar });
-				} else {
-					const ho = totalCardsOne.find(card => card.total === 3);
-					if (ho) {
-						let ar = playCardsOne.cards.filter(
-							card => card.value !== String(ho.id)
-						);
-						ar = [...ar, cards[0]];
-						setPlayerOne({ ...playerOne, cards: ar });
-					}
-				}
-			}
-		}
-		if (someCardPlayerTwo.length !== 0) {
-			//buscar elemento a eliminar
-			const hi = totalCardsTwo.find(card => card.total === 1);
-			console.log('find2=' + hi);
-			if (hi) {
-				//elimina el elemento que solo tiene una copia
-				let ar = playCardsTwo.cards.filter(
-					card => card.value !== String(hi.id)
-				);
-				ar = [...ar, cards[1]];
-				setPlayerTwo({ ...playerTwo, cards: ar });
-			} else {
-				const hi = totalCardsTwo.find(card => card.total === 2);
-				if (hi) {
-					let ar = playCardsTwo.cards.filter(
-						card => card.value !== String(hi.id)
-					);
-					//como tengo 2 solo quiero eliminar uno haci que encuentro el primero para no eliminarlo
-					const f = playCardsTwo.cards.filter(
-						card => card.value === String(hi.id)
-					);
-					ar = [...ar, f[1], cards[0]];
-					setPlayerTwo({ ...playerTwo, cards: ar });
-				} else {
-					const ho = totalCardsTwo.find(card => card.total === 3);
-					if (ho) {
-						let ar = playCardsTwo.cards.filter(
-							card => card.value !== String(ho.id)
-						);
-						ar = [...ar, cards[1]];
-						setPlayerTwo({ ...playerTwo, cards: ar });
-					}
-				}
-			}
-		}
-
-		//setPlayerOne({ ...playerOne, cards: [...playerOne.cards, cards[0]] });
-		//setPlayerTwo({ ...playerTwo, cards: [...playerTwo.cards, cards[1]] });
+		rulesGame(cards, 0, playerOne, playCardsOne, totalCardsOne, setPlayerOne);
+		rulesGame(cards, 1, playerTwo, playCardsTwo, totalCardsTwo, setPlayerTwo);
 		console.log(cards);
-		/*
-		const findCardPlayerOne = playerOne.cards.find(
-			card => card.value === cards[0].value
-		);
-
-		const findCardPlayerTwo = playerTwo.cards.find(
-			card => card.value === cards[1].value
-		);
-
-		if (findCardPlayerOne || findCardPlayerTwo) {
-			setWin(true);
-			setShowToast(true);
-			setWinName(findCardPlayerOne ? playerOne.name : playerTwo.name);
-		}
-		*/
 	};
 	const firstRequestCards = async () => {
 		const cards = await DeckOfCardsAPI.getCards(idGame, 20);
@@ -193,6 +143,8 @@ const GameProvider = ({ children }) => {
 				setPlayCardsTwo,
 				totalCardsTwo,
 				setTotalCardsTwo,
+				active,
+				setActive,
 			}}
 		>
 			{children}

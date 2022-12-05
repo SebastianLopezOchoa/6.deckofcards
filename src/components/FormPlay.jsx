@@ -5,7 +5,7 @@ import useGame from '../hooks/useGame';
 import styles from './FormPlay.module.css';
 
 const FormPlay = () => {
-	const { requestCards } = useGame();
+	const { requestCards, active } = useGame();
 	const handleClick = async () => {
 		await requestCards();
 	};
@@ -15,7 +15,7 @@ const FormPlay = () => {
 		setTimeout(() => {
 			setActiveBtn(false);
 		}, 1000);
-	}, [requestCards]);
+	}, [active]);
 
 	return (
 		<Stack gap={2} className='col-md-5 mx-auto'>
@@ -26,12 +26,9 @@ const FormPlay = () => {
 			>
 				Let's Play!
 			</Button>
-			<Button
-				variant='danger'
-				className={`${styles.loadung} ${activeBtn ? '' : styles.none}`}
-			>
+			<p className={`${styles.loading} ${activeBtn ? '' : styles.none}`}>
 				loading ...
-			</Button>
+			</p>
 		</Stack>
 	);
 };

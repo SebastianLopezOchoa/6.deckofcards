@@ -95,12 +95,12 @@ const GamePage = () => {
 	useEffect(() => {
 		setPlayCardsOne({ ...playerOne, cards: changeValues(playerOne) });
 		setPlayCardsTwo({ ...playerTwo, cards: changeValues(playerTwo) });
-	}, [playerOne,playerTwo]);
+	}, [playerOne, playerTwo]);
 
 	useEffect(() => {
 		setTotalCardsOne(totalCards(playCardsOne));
 		setTotalCardsTwo(totalCards(playCardsTwo));
-	}, [playCardsOne,playCardsTwo]);
+	}, [playCardsOne, playCardsTwo]);
 
 	useEffect(() => {
 		winner(playerOne, totalCardsOne);
