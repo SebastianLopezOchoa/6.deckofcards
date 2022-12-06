@@ -55,7 +55,7 @@ const GameProvider = ({ children }) => {
 				);
 				array = [...array, cards[request]];
 				// agrego el nuevo elemento
-				setPlayer({ ...player, cards: array });
+				setPlayer({ ...player, cards: organizeCards(array) });
 			} else {
 				// buscar elemento a eliminar que tiene 2 cartas repetidas
 				const findCardPlayer = totalCards.find(card => card.total === 2);
@@ -70,7 +70,7 @@ const GameProvider = ({ children }) => {
 					);
 					// ingreso el segundo elemento en llegar de la carta repetida
 					array = [...array, repeatedCard[1], cards[request]];
-					setPlayer({ ...player, cards: array });
+					setPlayer({ ...player, cards: organizeCards(array) });
 				}
 			}
 		}
@@ -83,39 +83,54 @@ const GameProvider = ({ children }) => {
 		rulesGame(cards, 1, playerTwo, playCardsTwo, totalCardsTwo, setPlayerTwo);
 		console.log(cards);
 	};
+
+	const organizeCards = array => {
+		const organizeCards = array.sort((a, b) => {
+			if (a.value < b.value) {
+				return -1;
+			}
+			if (a.value > b.value) {
+				return 1;
+			}
+			return 0;
+		});
+		return organizeCards;
+	};
+
 	const firstRequestCards = async () => {
 		const cards = await DeckOfCardsAPI.getCards(idGame, 20);
+		const arrOne = [
+			cards[0],
+			cards[1],
+			cards[2],
+			cards[3],
+			cards[4],
+			cards[5],
+			cards[6],
+			cards[7],
+			cards[8],
+			cards[9],
+		];
+		const arrTwo = [
+			cards[10],
+			cards[11],
+			cards[12],
+			cards[13],
+			cards[14],
+			cards[15],
+			cards[16],
+			cards[17],
+			cards[18],
+			cards[19],
+		];
+
 		setPlayerOne({
 			...playerOne,
-			cards: [
-				...playerOne.cards,
-				cards[0],
-				cards[1],
-				cards[2],
-				cards[3],
-				cards[4],
-				cards[5],
-				cards[6],
-				cards[7],
-				cards[8],
-				cards[9],
-			],
+			cards: organizeCards(arrOne),
 		});
 		setPlayerTwo({
 			...playerTwo,
-			cards: [
-				...playerTwo.cards,
-				cards[10],
-				cards[11],
-				cards[12],
-				cards[13],
-				cards[14],
-				cards[15],
-				cards[16],
-				cards[17],
-				cards[18],
-				cards[19],
-			],
+			cards: organizeCards(arrTwo),
 		});
 
 		console.log(cards);

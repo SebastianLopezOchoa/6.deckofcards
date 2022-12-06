@@ -10,9 +10,7 @@ const GamePage = () => {
 	const {
 		firstRequestCards,
 		playerOne,
-		setPlayerOne,
 		playerTwo,
-		setPlayerTwo,
 		totalCardsOne,
 		setTotalCardsOne,
 		totalCardsTwo,
@@ -76,7 +74,7 @@ const GamePage = () => {
 	const winner = (player, totalCards) => {
 		const ternas = totalCards.filter(card => card.total === 3);
 		const cuarta = totalCards.filter(card => card.total === 4);
-		//Si tiene 2 ternas y 1 cuarta gana el juego
+		// si tiene 2 ternas y 1 cuarta gana el juego
 		if (ternas.length === 2 && cuarta.length === 1) {
 			setShowToast(true);
 			setWinName(
